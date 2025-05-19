@@ -11,10 +11,25 @@ public_users.post("/register", (req,res) => {
 });
 
 // Get the book list available in the shop
-public_users.get('/',function (req, res) {
-  res.send(JSON.stringify(books,null,4));
+public_users.get('/', function (req, res) {
+    // Create a Promise that resolves with the books data
+    const getBooks = new Promise((resolve, reject) => {
+      if (books) {
+        resolve(books);
+      } else {
+        reject("No books found");
+      }
+    });
   
-});
+    // Handle the Promise
+    getBooks
+      .then(data => {
+        res.json(data);
+      })
+      .catch(error => {
+        res.status(500).json({ message: error });
+      });
+  });
 
 // Get book details based on ISBN
 public_users.get('/isbn/:isbn',function (req, res) {
